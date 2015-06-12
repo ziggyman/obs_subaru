@@ -9,7 +9,7 @@ from lsst.utils import getPackageDir
 
 hscConfigDir = os.path.join(getPackageDir("obs_subaru"), "config", "hsc")
 root.load(os.path.join(hscConfigDir, 'isr.py'))
-root.calibrate.photocal.colorterms(os.path.join(hscConfigDir, 'colorterms.py'))
+root.calibrate.photocal.colorterms.load(os.path.join(hscConfigDir, 'colorterms.py'))
 
 root.calibrate.measurePsf.starSelector.name='objectSize'
 root.calibrate.measurePsf.starSelector['objectSize'].widthMin=0.9
