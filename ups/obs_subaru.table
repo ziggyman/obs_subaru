@@ -5,7 +5,6 @@ setupRequired(pipe_tasks)
 setupRequired(meas_astrom)
 setupRequired(pyfits)
 
-setupOptional(psycopg2)
 setupOptional(meas_modelfit)
 setupOptional(meas_extensions_psfex)
 
