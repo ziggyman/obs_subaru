@@ -8,10 +8,6 @@ setupRequired(pyfits)
 setupOptional(meas_modelfit)
 setupOptional(meas_extensions_psfex)
 
-setupOptional(suprime_data)
-
-setupOptional(testdata_subaru)
-
 envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 envPrepend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 envPrepend(LSST_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
