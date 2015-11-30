@@ -3,7 +3,7 @@ import datetime
 
 from lsst.pipe.tasks.ingest import IngestTask, ParseTask, IngestArgumentParser
 
-class HscIngestArgumentParser(IngestArgumentParser):
+class SubaruIngestArgumentParser(IngestArgumentParser):
     def _parseDirectories(self, namespace):
         """Don't do any 'rerun' hacking: we want the raw data to end up in the root directory"""
         namespace.input = namespace.rawInput
@@ -14,9 +14,8 @@ class HscIngestArgumentParser(IngestArgumentParser):
         del namespace.rawOutput
         del namespace.rawRerun
 
-class HscIngestTask(IngestTask):
-    ArgumentParser = HscIngestArgumentParser
-
+class SubaruIngestTask(IngestTask):
+    ArgumentParser = SubaruIngestArgumentParser
 
 
 def datetime2mjd(date_time):
@@ -50,12 +49,6 @@ class HscParseTask(ParseTask):
     DAY0 = 55927  # Zero point for  2012-01-01  51544 -> 2000-01-01
 
     def translate_field(self, md):
-        field = md.get("OBJECT").strip()
-        if field == "#":
-            field = "UNKNOWN"
-        field = re.sub(r'\W', '_', field).upper() # replacing inappropriate characters for file path and upper()
-
-        return field
 
     def translate_visit(self, md):
         expId = md.get("EXP-ID").strip()
@@ -134,3 +127,41 @@ class HscParseTask(ParseTask):
             return md.get('FILTER01').strip().upper()
         except:
             return "Unrecognized"
+
+
+class PfsParseConfig(ParseConfig):
+    def setDefaults(self):
+        ParseConfig.setDefaults(self)
+        self.translators["date"] = "translate_date"
+        self.translators["field"] = "translate_field"
+        self.defaults["filter"] = "NONE"
+
+class PfsParseTask(ParseTask):
+    ConfigClass = PfsParseConfig
+
+    def getInfo(self, filename):
+        """Get information about the image from the filename and its contents
+
+        @param filename    Name of file to inspect
+        @return File properties; list of file properties for each extension
+        """
+        matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
+        if not matches:
+            raise RuntimeError("Unable to interpret filename: %s" % filename)
+        visit, arm, ccd = matches.groups()
+
+        header = afwImage.readMetadata(filename)
+        info = dict(visit=visit, arm=arm, ccd=ccd)
+        info = self.getInfoFromMetadata(header, info=info)
+        return info, [info]
+
+    def translate_field(self, md):
+        """Get 'field' from IMAGETYP
+
+        This is temporary, until an OBJECT (or similar) header can be provided,
+        but it's better than setting everything to the same thing.
+        """
+        field = md.get("IMAGETYP").strip()
+        if field in ("#", ""):
+            field = "UNKNOWN"
+        return re.sub(r'\W', '_', field).upper()
