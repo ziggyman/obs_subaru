@@ -1,7 +1,7 @@
 import re
 import datetime
 
-from lsst.pipe.tasks.ingest import IngestTask, ParseTask, IngestArgumentParser
+from lsst.pipe.tasks.ingest import IngestTask, ParseTask, IngestArgumentParser, ParseConfig
 
 class SubaruIngestArgumentParser(IngestArgumentParser):
     def _parseDirectories(self, namespace):
@@ -49,6 +49,12 @@ class HscParseTask(ParseTask):
     DAY0 = 55927  # Zero point for  2012-01-01  51544 -> 2000-01-01
 
     def translate_field(self, md):
+        #field = md.get("OBJECT").strip()
+        #if field == "#":
+        #    field = "UNKNOWN"
+        #field = re.sub(r'\W', '_', field).upper() # replacing inappropriate characters for file path and upper()
+        field = "UNKONWN" # for now
+        return field
 
     def translate_visit(self, md):
         expId = md.get("EXP-ID").strip()
