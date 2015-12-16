@@ -2,6 +2,7 @@ import re
 import datetime
 
 from lsst.pipe.tasks.ingest import IngestTask, ParseTask, IngestArgumentParser, ParseConfig
+import lsst.afw.image as afwImage
 
 class SubaruIngestArgumentParser(IngestArgumentParser):
     def _parseDirectories(self, namespace):
@@ -138,9 +139,9 @@ class HscParseTask(ParseTask):
 class PfsParseConfig(ParseConfig):
     def setDefaults(self):
         ParseConfig.setDefaults(self)
-        self.translators["date"] = "translate_date"
+#        self.translators["date"] = "translate_date"
         self.translators["field"] = "translate_field"
-        self.defaults["filter"] = "NONE"
+#        self.defaults["filter"] = "NONE"
 
 class PfsParseTask(ParseTask):
     ConfigClass = PfsParseConfig
@@ -151,13 +152,15 @@ class PfsParseTask(ParseTask):
         @param filename    Name of file to inspect
         @return File properties; list of file properties for each extension
         """
-        matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
+        #matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
+        matches = re.search("PFSA(\d{6})(\d)(\d).fits", filename)
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
         visit, arm, ccd = matches.groups()
+        print 'PfsParseTask.getInfo: filename = <',filename,'>: visit = <',visit,'>: ',type(visit),', arm = <',arm,'>: ',type(arm),', ccd = <',ccd,'>: ',type(ccd)
 
         header = afwImage.readMetadata(filename)
-        info = dict(visit=visit, arm=arm, ccd=ccd)
+        info = dict(visit=int(visit), arm=int(arm), ccd=int(ccd))
         info = self.getInfoFromMetadata(header, info=info)
         return info, [info]
 
@@ -170,4 +173,5 @@ class PfsParseTask(ParseTask):
         field = md.get("IMAGETYP").strip()
         if field in ("#", ""):
             field = "UNKNOWN"
+        print 'PfsParseTask.translate_field: field = <',field,'>'
         return re.sub(r'\W', '_', field).upper()

@@ -210,8 +210,10 @@ class SubaruIsrTask(IsrTask):
 
         ccdExposure = self.convertIntToFloat(ccdExposure)
         ccd = ccdExposure.getDetector()
+        print 'subaru.isr.runDataRef: ccd = <',ccd,'>'
 
         for amp in ccd:
+            print 'subaru.isr.runDataRef: amp = <',amp,'>'
             self.measureOverscan(ccdExposure, amp)
             if self.config.doSaturation:
                 self.saturationDetection(ccdExposure, amp)
@@ -222,6 +224,7 @@ class SubaruIsrTask(IsrTask):
                                                  afwImage.PARENT)
                 overscanArray = overscan.getImage().getArray()
                 median = numpy.ma.median(numpy.ma.masked_where(overscan.getMask().getArray(), overscanArray))
+                print 'subaru.isr.runDataRef: median = ',median
                 bad = numpy.where(numpy.abs(overscanArray - median) > self.config.overscanMaxDev)
                 overscan.getMask().getArray()[bad] = overscan.getMask().getPlaneBitMask("SAT")
 
