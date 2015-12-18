@@ -191,7 +191,10 @@ class SubaruIsrTask(IsrTask):
 
     def runDataRef(self, sensorRef):
         self.log.log(self.log.INFO, "Performing ISR on sensor %s" % (sensorRef.dataId))
-        ccdExposure = sensorRef.get('raw')
+        print 'sensorRef = ',sensorRef
+        print 'type(sensorRef) = ',type(sensorRef)
+        print 'dir(sensorRef) = ',dir(sensorRef)
+        ccdExposure = sensorRef.get('raw', immediate=True)
 
         if self.config.removePcCards: # Remove any PC00N00M cards in the header
             raw_md = sensorRef.get("raw_md")
@@ -208,7 +211,8 @@ class SubaruIsrTask(IsrTask):
                 self.log.log(self.log.INFO, "Recreating Wcs after stripping PC00n00m" % (sensorRef.dataId))
                 ccdExposure.setWcs(afwImage.makeWcs(raw_md))
 
-        ccdExposure = self.convertIntToFloat(ccdExposure)
+        #ccdExposure = self.convertIntToFloat(ccdExposure)
+        ccdExposure = ccdExposure.convertF()
         ccd = ccdExposure.getDetector()
         print 'subaru.isr.runDataRef: ccd = <',ccd,'>'
 
@@ -305,7 +309,8 @@ class SubaruIsrTask(IsrTask):
         if self.config.qa.doThumbnailFlattened:
             self.writeThumbnail(sensorRef, "flattenedThumb", ccdExposure)
 
-        self.measureBackground(ccdExposure)
+        #/
+        #self.measureBackground(ccdExposure)
 
         if self.config.doGuider:
             self.guider(ccdExposure)

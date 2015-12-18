@@ -54,7 +54,8 @@ exposures: {
 #        tables:        "raw_visit"
 #    }
     calexp: {
-        template:      "%(pointing)05d/corr/CORR-%(visit)06d-%(arm)1d%(ccd)1d.fits"
+        #template:      "%(pointing)05d/corr/CORR-%(visit)06d-%(arm)1d%(ccd)1d.fits"
+        template:    "%(dateObs)s/a/PFSA%(visit)06d%(arm)1d%(ccd)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -313,7 +314,7 @@ calibrations: {
         level:       "Ccd"
         tables:      "flat"
         columns:     "ccd"
-        columns:     "taiObs"
+        #columns:     "taiObs"
         reference:   "raw_visit"
         refCols:     "visit"
         validRange:  true

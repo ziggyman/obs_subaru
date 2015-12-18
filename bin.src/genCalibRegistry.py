@@ -34,7 +34,7 @@ parser = optparse.OptionParser()
 parser.add_option("--create", dest="create", default=False, action="store_true",
                   help="Create new registry (clobber old)?")
 parser.add_option("--root", dest="root", default=".", help="Root directory")
-parser.add_option("--camera", dest="camera", default="hsc", help="Camera name: HSC|SC")
+parser.add_option("--camera", dest="camera", default="hsc", help="Camera name: HSC|SC|PFS")
 parser.add_option("--validity", type="int", dest="validity", default=30, help="Calibration validity (days)")
 opts, args = parser.parse_args()
 
@@ -43,7 +43,7 @@ if len(args) > 0 or len(sys.argv) == 1:
     parser.print_help()
     sys.exit(1)
 
-if opts.camera.lower() not in ("suprime-cam", "suprimecam", "sc", "hsc", "hscsim"):
+if opts.camera.lower() not in ("suprime-cam", "suprimecam", "sc", "hsc", "hscsim", "pfs"):
     raise RuntimeError("Camera not recognised: %s" % camera)
 
 if os.path.exists(os.path.join(opts.root, 'calibRegistry_pgsql.py')) and havePgSql:
@@ -92,13 +92,17 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
             m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d).fits', fits)
         elif opts.camera.lower() in ("hsc", "hscsim"):
             m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)
+        elif opts.camera.lower() in ("pfs"):
+            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d).fits', fits)
+            if not m:
+                m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)
         if not m:
-            if (opts.camera.lower() in ("suprime-cam", "suprimecam", "sc") and
+            if (opts.camera.lower() in ("suprime-cam", "suprimecam", "sc", "pfs") and
                 re.search(r'.*/\w+-0000000(\d).fits', fits)):
                 print >>sys.stderr, ("Warning: file naming rules have changed. " +
                                      "Try renaming %s to %s" %
                                      (fits, re.sub(r"(.*/\w+)-0000000(\d).fits", r"\1-\2.fits", fits)))
-            print >>sys.stderr, "Warning: Unrecognized file:", fits
+            print >>sys.stderr, "Warning: Unrecognized file name:", fits
             continue
 
         print "Registering:", fits
