@@ -1,13 +1,12 @@
 from lsst.obs.subaru.ingest import PfsParseTask
 config.parse.retarget(PfsParseTask)
 config.register.columns = {'field': 'text',
-                           #'visit': 'text',
                            'visit': 'int',
                            'ccd': 'int',
-                           'arm': 'int',
-                           #'ccd': 'text',
-                           #'arm': 'text',
-                           'dateObs': 'text'#,
+                           'arm': 'text',
+                           'dateObs': 'text',
+                           'expTime': 'double',
+                           'dataType': 'text',
                            #'src': 'text' #this is new
                           }
 config.register.unique = ['visit', 'arm', 'ccd',]
@@ -28,6 +27,7 @@ config.parse.translation = {'dataType': 'IMAGETYP',
 config.parse.defaults = {'ccdTemp': "0", # Added in commissioning run 3
                        }
 config.parse.translators = {'field': 'translate_field',
+                            'dateObs': 'translate_date',
                           #'visit': 'translate_visit',
                           #'pointing': 'translate_pointing',
                           #'filter': 'translate_filter',

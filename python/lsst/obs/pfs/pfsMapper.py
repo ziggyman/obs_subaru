@@ -39,7 +39,7 @@ class PfsMapper(CameraMapper):
                 'visit': int,
                 'ccd': int,
                 'dateObs': str,
-                'arm': int,
+                'arm': str,
                 }
         for name in ("raw",
                      # processCcd outputs
@@ -181,7 +181,7 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
             obsMidpoint = obsStart.nsecs() + long(expTime * 1000000000L / 2)
             calib.setMidTime(dafBase.DateTime(obsMidpoint))
 
-        return self._flipChipsLR(exp, exp.getWcs(), dataId)
+        return exp#self._flipChipsLR(exp, exp.getWcs(), dataId)
 
     def standardizeCalib(self, dataset, item, dataId):
         """Standardize a calibration image read in by the butler
@@ -228,6 +228,7 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
         return ampId
 
     def _extractDetectorName(self, dataId):
+        print 'PfsMapper._extractDetectorName: dataId = ',dataId
         detId = int("%(ccd)d" % dataId)
         print 'PfsMapper._extractDetectorName = <',detId,'>'
         return detId
