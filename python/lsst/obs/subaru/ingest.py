@@ -156,22 +156,27 @@ class PfsParseTask(ParseTask):
         matches = re.search("PFSA(\d{6})(\d)(\d).fits", filename)
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
-        visit, armInt, ccd = matches.groups()
+        visit, armInt, det = matches.groups()
+        print 'visit = ',type(visit),': ',visit
         print 'armInt = ',type(armInt),': ',armInt
+        print 'det = ',type(det),': ',det
         arm = ''
+        ccd = int(det)
         if armInt == '0':
             arm = 'blue'
             print 'armInt == 0: arm set to <',arm,'>'
         elif armInt == '1':
             arm = 'red'
+            ccd += 4
             print 'armInt == 1: arm set to <',arm,'>'
         else:
             arm = 'ir'
+            ccd += 8
             print 'armInt == ',armInt,': arm set to <',arm,'>'
-        print 'PfsParseTask.getInfo: filename = <',filename,'>: visit = <',visit,'>: ',type(visit),', arm = <',arm,'>: ',type(arm),', ccd = <',ccd,'>: ',type(ccd)
+        print 'PfsParseTask.getInfo: filename = <',filename,'>: visit = <',visit,'>: ',type(visit),', arm = <',arm,'>: ',type(arm),', ccd = <',ccd,'>: ',type(ccd),', det = <',det,'>: ',type(det)
 
         header = afwImage.readMetadata(filename)
-        info = dict(visit=int(visit), arm=arm, ccd=int(ccd))
+        info = dict(visit=int(visit), arm=arm, det=int(det), ccd=int(ccd))
         info = self.getInfoFromMetadata(header, info=info)
         return info, [info]
 

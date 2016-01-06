@@ -4,12 +4,13 @@ config.register.columns = {'field': 'text',
                            'visit': 'int',
                            'ccd': 'int',
                            'arm': 'text',
+                           'det': 'int',
                            'dateObs': 'text',
                            'expTime': 'double',
                            'dataType': 'text',
                            #'src': 'text' #this is new
                           }
-config.register.unique = ['visit', 'arm', 'ccd',]
+config.register.unique = ['visit', 'ccd', 'arm', 'det']
 config.register.visit = ['visit', 'field', 'dateObs']
 
 config.parse.translation = {'dataType': 'IMAGETYP',
