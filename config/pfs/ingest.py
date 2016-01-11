@@ -1,20 +1,22 @@
 from lsst.obs.subaru.ingest import PfsParseTask
 config.parse.retarget(PfsParseTask)
-config.register.columns = {'field': 'text',
+config.register.columns = {'site': 'text', #J: JHU, L: LAM, X: Subaru offline, I: IPMU, A: ASIAA, S: Summit, P: Princeton, F: simulation (fake)
+                           'category': 'text', #A: science, B: NTR, C: Meterology, D: HG
+                           'field': 'text', # IMAGETYP
                            'visit': 'int',
-                           'ccd': 'int',
-                           'arm': 'text',
-                           'det': 'int',
+                           'ccd': 'int', #[0-11]
+                           'filter': 'text', #PFS-B: blue, PFS-R: red, PFS-N: nir, PFS-M: medium resolution red
+                           'det': 'int', #1-4
                            'dateObs': 'text',
                            'expTime': 'double',
-                           'dataType': 'text',
+                           'dataType': 'text', #IMAGETYP, same as field
                            #'src': 'text' #this is new
                           }
-config.register.unique = ['visit', 'ccd', 'arm', 'det']
+config.register.unique = ['site', 'category', 'visit', 'filter', 'det']
 config.register.visit = ['visit', 'field', 'dateObs']
 
 config.parse.translation = {'dataType': 'IMAGETYP',
-                          'expTime': 'EXPTIME',
+                            'expTime': 'EXPTIME',
                           #'ccd': 'DET-ID',
                           #'pa': 'INST-PA',
                           #'autoguider': 'T_AG',
@@ -22,7 +24,7 @@ config.parse.translation = {'dataType': 'IMAGETYP',
                           #'config': 'T_CFGFIL',
                           #'frameId': 'FRAMEID',
                           #'expId': 'EXP-ID',
-                          'dateObs': 'DATE-OBS',
+                            'dateObs': 'DATE-OBS',
                           #'taiObs': 'DATE-OBS',
 }
 config.parse.defaults = {'ccdTemp': "0", # Added in commissioning run 3

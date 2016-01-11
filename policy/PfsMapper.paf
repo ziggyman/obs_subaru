@@ -27,7 +27,7 @@ defaultSubLevels: {
 
 exposures: {
     raw: {
-        template:    "%(dateObs)s/PFSA%(visit)06d%(arm)s%(det)1d.fits"
+        template:    "%(dateObs)s/PF%(site)s%(category)s%(visit)06d%(filter)s%(det)1d.fits"
         python:     "lsst.afw.image.DecoratedImageU"
         persistable:         "DecoratedImageU"
         storage:     "FitsStorage"
@@ -36,7 +36,7 @@ exposures: {
         tables:        "raw_visit"
     }
     postISRCCD: {
-        template:    "postISRCCD/v%(visit)07d/c%(arm)s%(det)1d.fits"
+        template:    "postISRCCD/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(filter)s%(det)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -45,7 +45,7 @@ exposures: {
         tables:        "raw_visit"
     }
 #    visitim: {
-#        template:      "visitim/v%(visit)07d/c%(arm)s%(det)1d.fits"
+#        template:      "visitim/v%(visit)07d/cPF%(site)s%(category)s%(filter)s%(det)1d.fits"
 #        python:        "lsst.afw.image.ExposureF"
 #        persistable:        "ExposureF"
 #        storage:    "FitsStorage"
@@ -54,8 +54,7 @@ exposures: {
 #        tables:        "raw_visit"
 #    }
     calexp: {
-        #template:      "%(pointing)05d/corr/CORR-%(visit)06d-%(arm)s%(det)1d.fits"
-        template:    "%(dateObs)s/calExp/PFSA%(visit)06d%(arm)s%(det)1d.fits"
+        template:    "calExp/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(filter)s%(det)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -277,7 +276,7 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-%(arm)s%(det)1d.fits"
+        template:    "BIAS/%(calibDate)s/%(filter)s/%(calibVersion)s/BIAS-%(site)s%(category)s%(det)1d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -292,7 +291,7 @@ calibrations: {
         validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/NONE/%(calibVersion)s/DARK-%(arm)s%(det)1d.fits"
+        template:    "DARK/%(calibDate)s/%(filter)s/%(calibVersion)s/DARK-%(site)s%(category)s%(det)1d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -307,7 +306,7 @@ calibrations: {
         validEndName: validEnd
     }
     flat: {
-        template:    "FLAT/%(calibDate)s/%(calibVersion)s/FLAT-%(arm)s%(det)1d.fits"
+        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-%(site)s%(category)s%(det)1d.fits"
         python:      "lsst.afw.image.MaskedImageF"
         persistable: "MaskedImageF"
         storage:     "FitsStorage"
@@ -322,7 +321,7 @@ calibrations: {
         validEndName: validEnd
     }
     fringe: {
-        template:    "FRINGE/%(calibDate)s/%(calibVersion)s/FRINGE-%(arm)s%(det)1d.fits"
+        template:    "FRINGE/%(calibDate)s/%(filter)s/%(calibVersion)s/FRINGE-%(site)s%(category)s%(det)1d.fits"
         python:      "lsst.afw.image.ExposureF"
         persistable: "ExposureF"
         storage:     "FitsStorage"
@@ -347,14 +346,14 @@ datasets: {
 #        tables:        raw
 #        tables:        raw_visit
 #    }
-#    psf: {
-#        template:      "%(pointing)05d/output/PSF-%(visit)07d-%(arm)s%(det)1d.boost"
-#        python:        "lsst.afw.detection.Psf"
-#        persistable:        "Psf"
-#        storage:    "BoostStorage"
-#        tables:        "raw"
-#        tables:        "raw_visit"
-#    }
+    psf: {
+        template:      "%(visit)s/output/%(filter)s/PS%(site)s%(category)s%(det)1d.boost"
+        python:        "lsst.afw.detection.Psf"
+        persistable:        "Psf"
+        storage:    "BoostStorage"
+        tables:        "raw"
+        tables:        "raw_visit"
+    }
 #    apCorr: {
 #        template:      "%(pointing)05d/output/APC-%(visit)07d-%(arm)s%(det)1d.pickle"
 #        python:        "lsst.meas.algorithms.ApertureCorrection"
@@ -445,18 +444,18 @@ datasets: {
 #    }
 
 
-#    log: {
-#        template:      "%(pointing)05d/logs/run.log"
-#        python:        "str"
-#        persistable:   "None"
-#        storage:       "TextStorage"
-#    }
-#    logDir: {
-#        template:      "%(pointing)05d/logs"
-#        python:        "str"
-#        persistable:   "None"
-#        storage:       "None"
-#    }
+    log: {
+        template:      "%(visit)s/logs/run.log"
+        python:        "str"
+        persistable:   "None"
+        storage:       "TextStorage"
+    }
+    logDir: {
+        template:      "%(visit)s/logs"
+        python:        "str"
+        persistable:   "None"
+        storage:       "None"
+    }
 
 #    deepCoadd_diffsrc: {
 #        template:    "deepCoadd-diff/%(tract)d/diffsrc-%(tract)d-%(patch)s.fits"
@@ -980,14 +979,14 @@ datasets: {
 #    }
 
     ossThumb: {
-        template:    "%(pointing)05d/thumbs/oss-%(visit)07d-%(arm)s%(det)1d.png"
+        template:    "%(pointing)05d/thumbs/oss-%(visit)07d-%(filter)s%(det)1d.png"
         python:      __builtin__.str
         persistable: None
         storage:     TextStorage
         tables:      raw
     }
     flattenedThumb: {
-        template:    "%(pointing)05d/thumbs/flattened-%(visit)07d-%(arm)s%(det)1d.png"
+        template:    "%(pointing)05d/thumbs/flattened-%(visit)07d-%(filter)s%(det)1d.png"
         python:      __builtin__.str
         persistable: None
         storage:     TextStorage

@@ -153,30 +153,38 @@ class PfsParseTask(ParseTask):
         @return File properties; list of file properties for each extension
         """
         #matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
-        matches = re.search("PFSA(\d{6})(\d)(\d).fits", filename)
+        matches = re.search("PF([JLXIASPF])([ABCD])(\d{6})(\d)(\d).fits", filename)
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
-        visit, armInt, det = matches.groups()
+        site, category, visit, filterInt, det = matches.groups()
+        print 'site = ',type(site),': ',site
+        print 'category = ',type(category),': ',category
         print 'visit = ',type(visit),': ',visit
-        print 'armInt = ',type(armInt),': ',armInt
+        print 'filterInt = ',type(filterInt),': ',filterInt
         print 'det = ',type(det),': ',det
-        arm = ''
-        ccd = int(det)
-        if armInt == '0':
-            arm = 'blue'
-            print 'armInt == 0: arm set to <',arm,'>'
-        elif armInt == '1':
-            arm = 'red'
+        if int(det) > 4:
+            det = '4'
+        ccd = int(det)-1
+        filter = ''
+        if filterInt == '0':
+            filter = 'PFS-B'
+            print 'filterInt == 0: filter set to <',filter,'>'
+        elif filterInt == '1':
+            filter = 'PFS-R'
             ccd += 4
-            print 'armInt == 1: arm set to <',arm,'>'
-        else:
-            arm = 'ir'
+            print 'filterInt == 1: filter set to <',filter,'>'
+        elif filterInt == '2':
+            filter = 'PFS-N'
             ccd += 8
-            print 'armInt == ',armInt,': arm set to <',arm,'>'
-        print 'PfsParseTask.getInfo: filename = <',filename,'>: visit = <',visit,'>: ',type(visit),', arm = <',arm,'>: ',type(arm),', ccd = <',ccd,'>: ',type(ccd),', det = <',det,'>: ',type(det)
+            print 'filterInt == 2: filter set to <',filter,'>'
+        else:
+            filter = 'PFS-M'
+            ccd += 4
+            print 'filterInt == ',filterInt,': filter set to <',filter,'>'
+        print 'PfsParseTask.getInfo: filename = <',filename,'>: site = <',site,'>: ',type(site),', category = <',category,'>: ',type(category),', visit = <',visit,'>: ',type(visit),', filter = <',filter,'>: ',type(filter),', ccd = <',ccd,'>: ',type(ccd),', det = <',det,'>: ',type(det)
 
         header = afwImage.readMetadata(filename)
-        info = dict(visit=int(visit), arm=arm, det=int(det), ccd=int(ccd))
+        info = dict(site=site, category=category, visit=int(visit), filter=filter, det=int(det), ccd=int(ccd))
         info = self.getInfoFromMetadata(header, info=info)
         return info, [info]
 

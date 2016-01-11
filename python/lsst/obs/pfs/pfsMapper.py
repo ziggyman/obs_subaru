@@ -29,18 +29,14 @@ class PfsMapper(CameraMapper):
         super(PfsMapper, self).__init__(policy, policyFile.getRepositoryPath(), **kwargs)
 
         # Ensure each dataset type of interest knows about the full range of keys available from the registry
-#        keys = {'field': str,
-#                'visit': str,
-#                'ccd': str,
-#                'dateObs': str,
-#                'arm': str,
-#                }
         keys = {'field': str,
                 'visit': int,
                 'ccd': int, # for compatibility with HSC: serial no of ccd
-                'det': int, # [0,1,2,3] for each arm in [blue, red, ir]
+                'det': int, # [0,1,2,3] for each arm in [blue, red, nir, medred]
                 'dateObs': str,
-                'arm': str,
+                'filter': str, # 'arm' called filter for compatibility
+                'site': str,
+                'category': str,
                 }
         for name in ("raw",
                      # processCcd outputs
@@ -82,26 +78,35 @@ class PfsMapper(CameraMapper):
             print 'PfsMapper.__init__: name = <',name,'>'
             self.mappings[name].keyDict.update(keys)
 
+
         # The order of these defineFilter commands matters as their IDs are used to generate at least some
         # object IDs (e.g. on coadds) and changing the order will invalidate old objIDs
 
-        #afwImageUtils.resetFilters()
-        #afwImageUtils.defineFilter(name="UNRECOGNISED", lambdaEff=0,
-        #                           alias=["NONE", "None", "Unrecognised", "UNRECOGNISED",
-        #                                  "Unrecognized", "UNRECOGNIZED", "NOTSET",])
+        afwImageUtils.resetFilters()
+        afwImageUtils.defineFilter(name="UNRECOGNISED", lambdaEff=0,
+                                   alias=["NONE", "None", "Unrecognised", "UNRECOGNISED",
+                                          "Unrecognized", "UNRECOGNIZED", "NOTSET",])
+        afwImageUtils.defineFilter(name='PFS-B', lambdaEff=477, alias=['blue'])
+        afwImageUtils.defineFilter(name='PFS-R', lambdaEff=623, alias=['red'])
+        afwImageUtils.defineFilter(name='PFS-N', lambdaEff=623, alias=['nearInfraRed'])
+        afwImageUtils.defineFilter(name='PFS-M', lambdaEff=775, alias=['mediumResolutionRed'])
         #
         # self.filters is used elsewhere, and for now we'll set it
         #
         # It's a bit hard to initialise self.filters properly until #2113 is resolved,
         # including the part that makes it possible to get all aliases
         #
-        #self.filters = {}
-        #for f in [
-        #    "NONE",
-        #    "UNRECOGNISED"]:
+        self.filters = {}
+        for f in [
+            "PFS-B",
+            "PFS-R",
+            "PFS-N",
+            "PFS-M",
+            "NONE",
+            "UNRECOGNISED"]:
             # Get the canonical name -- see #2113
-        #    self.filters[f] = afwImage.Filter(afwImage.Filter(f).getId()).getName()
-        #self.defaultFilterName = "UNRECOGNISED"
+            self.filters[f] = afwImage.Filter(afwImage.Filter(f).getId()).getName()
+        self.defaultFilterName = "UNRECOGNISED"
 
         #
         # The number of bits allocated for fields in object IDs, appropriate for
@@ -172,7 +177,7 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
             exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
         else:
             exp = item
-        self._standardizeExposure(self.exposures['raw'], exp, dataId, trimmed=False, filter=False)
+        self._standardizeExposure(self.exposures['raw'], exp, dataId, trimmed=False)
         
         md = exp.getMetadata()
         if md.exists("MJD-STR"):
@@ -182,7 +187,27 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
             obsMidpoint = obsStart.nsecs() + long(expTime * 1000000000L / 2)
             calib.setMidTime(dafBase.DateTime(obsMidpoint))
 
-        return exp#self._flipChipsLR(exp, exp.getWcs(), dataId)
+        return exp
+    
+#    def std_postISRCCD(self, item, dataId):
+#        if (isinstance(item, afwImage.DecoratedImageU) or isinstance(item, afwImage.DecoratedImageI) or
+#            isinstance(item, afwImage.DecoratedImageF) or isinstance(item, afwImage.DecoratedImageD)):
+#            exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
+#        else:
+#            exp = item
+#        self._standardizeExposure(self.exposures['postISRCCD'], exp, dataId, trimmed=True, filter=False)
+#
+#        return exp
+        
+#    def std_calexp(self, item, dataId):
+#        if (isinstance(item, afwImage.DecoratedImageU) or isinstance(item, afwImage.DecoratedImageI) or
+#            isinstance(item, afwImage.DecoratedImageF) or isinstance(item, afwImage.DecoratedImageD)):
+#            exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
+#        else:
+#            exp = item
+#        self._standardizeExposure(self.exposures['calexp'], exp, dataId, trimmed=True, filter=False)
+#
+#        return exp
 
     def standardizeCalib(self, dataset, item, dataId):
         """Standardize a calibration image read in by the butler
@@ -230,17 +255,16 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
 
     def _extractDetectorName(self, dataId):
         print 'PfsMapper._extractDetectorName: dataId = ',dataId
-        detName = str("%(arm)s" % dataId)+'_'+str("%(det)s" % dataId)
+        detName = "%(filter)s" % dataId
+        if detName == 'PFS-M':
+            detName = 'PFS-R'
+        detName = detName + '_' + str("%(det)s" % dataId)
         print 'PfsMapper._extractDetectorName = <',detName,'>'
         return detName
 
     def _extractDetectorId(self, dataId):
         print 'PfsMapper._extractDetectorId: dataId = ',dataId
         detId = int("%(ccd)d" % dataId)
-#        if str("%(arm)s" % dataId) == 'red':
-#            detId += 4
-#        elif str("%(arm)s" % dataId) == 'ir':
-#            detId += 8
         print 'PfsMapper._extractDetectorId = <',detId,'>'
         return detId
 
