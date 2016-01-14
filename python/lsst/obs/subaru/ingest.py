@@ -153,7 +153,7 @@ class PfsParseTask(ParseTask):
         @return File properties; list of file properties for each extension
         """
         #matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
-        matches = re.search("PF([JLXIASPF])([ABCD])(\d{6})(\d)(\d).fits", filename)
+        matches = re.search("PF([JLXIASPF])([ABCDS])(\d{6})(\d)(\d).fits", filename)
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
         site, category, visit, filterInt, det = matches.groups()
