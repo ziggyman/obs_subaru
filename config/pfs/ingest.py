@@ -15,7 +15,7 @@ config.register.columns = {'site': 'text', #J: JHU, L: LAM, X: Subaru offline, I
                            #'src': 'text' #this is new
                           }
 config.register.unique = ['site', 'category', 'visit', 'filter', 'det']
-config.register.visit = ['visit', 'field', 'dateObs']
+config.register.visit = ['visit', 'field', 'dateObs', 'taiObs']
 
 config.parse.translation = {'dataType': 'IMAGETYP',
                             'expTime': 'EXPTIME',
