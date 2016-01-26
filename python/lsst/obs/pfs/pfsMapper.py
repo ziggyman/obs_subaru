@@ -32,8 +32,9 @@ class PfsMapper(CameraMapper):
         keys = {'field': str,
                 'visit': int,
                 'ccd': int, # for compatibility with HSC: serial no of ccd
-                'det': int, # [0,1,2,3] for each arm in [blue, red, nir, medred]
+                'spectrograph': int, # [0,1,2,3] for each arm in [blue, red, nir, medred]
                 'dateObs': str,
+                'taiObs': str,
                 'filter': str, # 'arm' called filter for compatibility
                 'site': str,
                 'category': str,
@@ -258,7 +259,7 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
         detName = "%(filter)s" % dataId
         if detName == 'PFS-M':
             detName = 'PFS-R'
-        detName = detName + '_' + str("%(det)s" % dataId)
+        detName = detName + '_' + str("%(spectrograph)s" % dataId)
         print 'PfsMapper._extractDetectorName = <',detName,'>'
         return detName
 

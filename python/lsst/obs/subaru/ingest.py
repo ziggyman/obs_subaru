@@ -156,15 +156,15 @@ class PfsParseTask(ParseTask):
         matches = re.search("PF([JLXIASPF])([ABCDS])(\d{6})(\d)(\d).fits", filename)
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
-        site, category, visit, filterInt, det = matches.groups()
+        site, category, visit, filterInt, spectrograph = matches.groups()
         print 'site = ',type(site),': ',site
         print 'category = ',type(category),': ',category
         print 'visit = ',type(visit),': ',visit
         print 'filterInt = ',type(filterInt),': ',filterInt
-        print 'det = ',type(det),': ',det
-        if int(det) > 4:
-            det = '4'
-        ccd = int(det)-1
+        print 'spectrograph = ',type(spectrograph),': ',spectrograph
+        if int(spectrograph) > 4:
+            spectrograph = '4'
+        ccd = int(spectrograph)-1
         filter = ''
         if filterInt == '0':
             filter = 'PFS-B'
@@ -181,10 +181,10 @@ class PfsParseTask(ParseTask):
             filter = 'PFS-M'
             ccd += 4
             print 'filterInt == ',filterInt,': filter set to <',filter,'>'
-        print 'PfsParseTask.getInfo: filename = <',filename,'>: site = <',site,'>: ',type(site),', category = <',category,'>: ',type(category),', visit = <',visit,'>: ',type(visit),', filter = <',filter,'>: ',type(filter),', ccd = <',ccd,'>: ',type(ccd),', det = <',det,'>: ',type(det)
+        print 'PfsParseTask.getInfo: filename = <',filename,'>: site = <',site,'>: ',type(site),', category = <',category,'>: ',type(category),', visit = <',visit,'>: ',type(visit),', filter = <',filter,'>: ',type(filter),', ccd = <',ccd,'>: ',type(ccd),', spectrograph = <',spectrograph,'>: ',type(spectrograph)
 
         header = afwImage.readMetadata(filename)
-        info = dict(site=site, category=category, visit=int(visit), filter=filter, det=int(det), ccd=int(ccd))
+        info = dict(site=site, category=category, visit=int(visit), filter=filter, spectrograph=int(spectrograph), ccd=int(ccd))
         info = self.getInfoFromMetadata(header, info=info)
         return info, [info]
 

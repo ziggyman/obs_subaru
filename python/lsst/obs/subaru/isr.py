@@ -191,9 +191,9 @@ class SubaruIsrTask(IsrTask):
 
     def runDataRef(self, sensorRef):
         self.log.log(self.log.INFO, "Performing ISR on sensor %s" % (sensorRef.dataId))
-        print 'sensorRef = ',sensorRef
-        print 'type(sensorRef) = ',type(sensorRef)
-        print 'dir(sensorRef) = ',dir(sensorRef)
+        print 'SubaruIsrTask.runDataRef: sensorRef = ',sensorRef
+        print 'SubaruIsrTask.runDataRef: type(sensorRef) = ',type(sensorRef)
+        print 'SubaruIsrTask.runDataRef: dir(sensorRef) = ',dir(sensorRef)
         ccdExposure = sensorRef.get('raw', immediate=True)
 
         if self.config.removePcCards: # Remove any PC00N00M cards in the header
