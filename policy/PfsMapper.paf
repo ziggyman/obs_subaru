@@ -263,7 +263,7 @@ exposures: {
 #        tables:      "raw_visit"
 #    }
 #    flattenedImage: {
-#        template:    "%(pointing)05d/thumbs/flattened-%(visit)07d-%(filter)s%(spectrograph)1d.fits"
+#        template:    "%(pointing)05d/thumbs/flattened-%(visit)07d-%(filter)s%(spectrograph)01d.fits"
 #        python:      "lsst.afw.image.ExposureF"
 #        persistable: "ExposureF"
 #        storage:     "FitsStorage"
@@ -276,7 +276,7 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/%(filter)s/%(calibVersion)s/BIAS-%(site)s%(category)s%(spectrograph)1d.fits"
+        template:    "BIAS/%(calibDate)s/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -291,7 +291,7 @@ calibrations: {
         validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/%(filter)s/%(calibVersion)s/DARK-%(site)s%(category)s%(spectrograph)1d.fits"
+        template:    "DARK/%(calibDate)s/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -306,7 +306,7 @@ calibrations: {
         validEndName: validEnd
     }
     flat: {
-        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-%(site)s%(category)s%(spectrograph)1d.fits"
+        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-PF%(site)s%(category)s_%(spectrograph)1d.fits"
         python:      "lsst.afw.image.MaskedImageF"
         persistable: "MaskedImageF"
         storage:     "FitsStorage"
