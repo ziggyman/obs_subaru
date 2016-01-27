@@ -71,7 +71,10 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
     if isSqlite:
         cmd = "create table " + calib.lower() + " (id integer primary key autoincrement"
         cmd += ", validStart text, validEnd text"
-        cmd += ", calibDate text, filter text, calibVersion text, ccd int"
+        if opts.camera.lower() in ("pfs"):
+            cmd += ", calibDate text, filter text, calibVersion text, ccd int, site text, category text"
+        else:
+            cmd += ", calibDate text, filter text, calibVersion text, ccd int"
         cmd += ")"
         conn.execute(cmd)
     else:
@@ -79,23 +82,31 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
         cur.execute(cmd)
         cmd = "create table " + calib.lower() + " (id SERIAL NOT NULL PRIMARY KEY"
         cmd += ", validStart VARCHAR(10), validEnd VARCHAR(10)"
-        cmd += ", calibDate VARCHAR(10), filter VARCHAR(16), calibVersion VARCHAR(16), ccd INT"
+        if opts.camera.lower() in ("pfs"):
+            cmd += ", calibDate VARCHAR(10), filter VARCHAR(16), calibVersion VARCHAR(16), ccd INT, site VARCHAR(16), category VARCHAR(16)"
+        else:
+            cmd += ", calibDate VARCHAR(10), filter VARCHAR(16), calibVersion VARCHAR(16), ccd INT"
         cmd += ")"
         cur.execute(cmd)
     conn.commit()
 
     rowsPerFilter = dict()
 
-    for fits in glob.glob(os.path.join(opts.root, calib.upper(), "20*-*-*", "*", "*",
-                                       calib.upper() + "-*.fits*")):
+    if opts.camera.lower() in ("pfs"):
+        checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*",
+                                       calib.upper() + "-*.fits*")
+    else:
+        checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*", "*",
+                                       calib.upper() + "-*.fits*")
+
+    for fits in glob.glob(checkFits):
+        print "fits = <"+fits+">"
         if opts.camera.lower() in ("suprime-cam", "suprimecam", "sc"):
             m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d).fits', fits)
         elif opts.camera.lower() in ("hsc", "hscsim"):
-            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)
+            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)#"BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-%(ccd)03d.fits"
         elif opts.camera.lower() in ("pfs"):
-            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d).fits', fits)
-            if not m:
-                m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)
+            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w-]+)/\w+-PF(\w)(\w)_(\d{2}).fits', fits)
         if not m:
             if (opts.camera.lower() in ("suprime-cam", "suprimecam", "sc", "pfs") and
                 re.search(r'.*/\w+-0000000(\d).fits', fits)):
@@ -106,7 +117,12 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
             continue
 
         print "Registering:", fits
-        year, month, day, filterName, version, ccd = m.groups()
+        print m.groups()
+        if opts.camera.lower() in ("pfs"):
+            year, month, day, version, site, category, ccd = m.groups()
+            filterName = 'NONE'
+        else:
+            year, month, day, filterName, version, ccd = m.groups()
 
         date = datetime.date(int(year), int(month), int(day))
         if filterName not in rowsPerFilter:
@@ -140,11 +156,19 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
             # print "%f --> %f %f" % (calibDate, validStart, validEnd)
 
             if isSqlite:
-                conn.execute("INSERT INTO " + calib.lower() + " VALUES (NULL, ?, ?, ?, ?, ?, ?)",
-                             (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd))
+                if opts.camera.lower() in ("pfs"):
+                    conn.execute("INSERT INTO " + calib.lower() + " VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                 (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd, site, category))
+                else:
+                    conn.execute("INSERT INTO " + calib.lower() + " VALUES (NULL, ?, ?, ?, ?, ?, ?)",
+                                 (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd))
             else:
-                cur.execute("INSERT INTO " + calib.lower() + " (validStart, validEnd, calibDate, filter, calibVersion, ccd) VALUES (%s, %s, %s, %s, %s, %s)",
-                            (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd))
+                if opts.camera.lower() in ("pfs"):
+                    cur.execute("INSERT INTO " + calib.lower() + " (validStart, validEnd, calibDate, filter, calibVersion, ccd, site, category) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                                (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd, site, category))
+                else:
+                    cur.execute("INSERT INTO " + calib.lower() + " (validStart, validEnd, calibDate, filter, calibVersion, ccd) VALUES (%s, %s, %s, %s, %s, %s)",
+                                (validStart, validEnd, calibDate, filterName, row.calibVersion, row.ccd))
 
 
 conn.commit()
