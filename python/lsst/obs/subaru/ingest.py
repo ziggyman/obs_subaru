@@ -157,31 +157,27 @@ class PfsParseTask(ParseTask):
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
         site, category, visit, filterInt, spectrograph = matches.groups()
-        print 'site = ',type(site),': ',site
-        print 'category = ',type(category),': ',category
-        print 'visit = ',type(visit),': ',visit
-        print 'filterInt = ',type(filterInt),': ',filterInt
-        print 'spectrograph = ',type(spectrograph),': ',spectrograph
+        self.log.info('site = %s: %s' % type(site), site)
+        self.log.info('category = %s: %s' % type(category),category)
+        self.log.info('visit = %s: %s' % type(visit),visit)
+        self.log.info('filterInt = %s: %d' % type(filterInt),filterInt)
+        self.log.info('spectrograph = %s: %s' % type(spectrograph),spectrograph)
         if int(spectrograph) > 4:
             spectrograph = '4'
         ccd = int(spectrograph)-1
         filter = ''
         if filterInt == '0':
             filter = 'PFS-B'
-            print 'filterInt == 0: filter set to <',filter,'>'
         elif filterInt == '1':
             filter = 'PFS-R'
             ccd += 4
-            print 'filterInt == 1: filter set to <',filter,'>'
         elif filterInt == '2':
             filter = 'PFS-N'
             ccd += 8
-            print 'filterInt == 2: filter set to <',filter,'>'
         else:
             filter = 'PFS-M'
             ccd += 4
-            print 'filterInt == ',filterInt,': filter set to <',filter,'>'
-        print 'PfsParseTask.getInfo: filename = <',filename,'>: site = <',site,'>: ',type(site),', category = <',category,'>: ',type(category),', visit = <',visit,'>: ',type(visit),', filter = <',filter,'>: ',type(filter),', ccd = <',ccd,'>: ',type(ccd),', spectrograph = <',spectrograph,'>: ',type(spectrograph)
+        self.log.info('PfsParseTask.getInfo: filename = <%s>: site = <%s>: %s, category = <%s>: %s, visit = <%d>: %s, filter = <%s>: %s, ccd = <%d>: %s, spectrograph = <%s>: ',% fileName, site, type(site),category, type(category),visit, type(visit), filter, type(filter), ccd, type(ccd), spectrograph, type(spectrograph))
 
         header = afwImage.readMetadata(filename)
         info = dict(site=site, category=category, visit=int(visit), filter=filter, spectrograph=int(spectrograph), ccd=int(ccd))
@@ -197,5 +193,5 @@ class PfsParseTask(ParseTask):
         field = md.get("IMAGETYP").strip()
         if field in ("#", ""):
             field = "UNKNOWN"
-        print 'PfsParseTask.translate_field: field = <',field,'>'
+        self.log.info('PfsParseTask.translate_field: field = %s' % field)
         return re.sub(r'\W', '_', field).upper()
