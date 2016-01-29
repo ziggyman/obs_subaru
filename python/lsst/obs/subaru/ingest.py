@@ -177,7 +177,6 @@ class PfsParseTask(ParseTask):
         else:
             filter = 'PFS-M'
             ccd += 4
-        self.log.info('PfsParseTask.getInfo: filename = <%s>: site = <%s>: %s, category = <%s>: %s, visit = <%d>: %s, filter = <%s>: %s, ccd = <%d>: %s, spectrograph = <%s>: ',% fileName, site, type(site),category, type(category),visit, type(visit), filter, type(filter), ccd, type(ccd), spectrograph, type(spectrograph))
 
         header = afwImage.readMetadata(filename)
         info = dict(site=site, category=category, visit=int(visit), filter=filter, spectrograph=int(spectrograph), ccd=int(ccd))
