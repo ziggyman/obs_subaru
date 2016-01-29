@@ -157,11 +157,6 @@ class PfsParseTask(ParseTask):
         if not matches:
             raise RuntimeError("Unable to interpret filename: %s" % filename)
         site, category, visit, filterInt, spectrograph = matches.groups()
-        self.log.info('site = %s: %s' % type(site), site)
-        self.log.info('category = %s: %s' % type(category),category)
-        self.log.info('visit = %s: %s' % type(visit),visit)
-        self.log.info('filterInt = %s: %d' % type(filterInt),filterInt)
-        self.log.info('spectrograph = %s: %s' % type(spectrograph),spectrograph)
         if int(spectrograph) > 4:
             spectrograph = '4'
         ccd = int(spectrograph)-1
