@@ -67,7 +67,7 @@ else:
 
 Row = collections.namedtuple("Row", ["calibDate", "calibVersion", "ccd"])
 
-for calib in ('bias', 'dark', 'flat', 'fringe'):
+for calib in ('bias', 'dark', 'flat', 'fringe', 'traceDef'):
     if isSqlite:
         cmd = "create table " + calib.lower() + " (id integer primary key autoincrement"
         cmd += ", validStart text, validEnd text"
@@ -83,7 +83,7 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
         cmd = "create table " + calib.lower() + " (id SERIAL NOT NULL PRIMARY KEY"
         cmd += ", validStart VARCHAR(10), validEnd VARCHAR(10)"
         if opts.camera.lower() in ("pfs"):
-            cmd += ", calibDate VARCHAR(10), filter VARCHAR(16), calibVersion VARCHAR(16), ccd INT, site VARCHAR(16), category VARCHAR(16)"
+            cmd += ", calibDate VARCHAR(10), filter VARCHAR(5), calibVersion VARCHAR(5), ccd INT, site VARCHAR(1), category VARCHAR(1)"
         else:
             cmd += ", calibDate VARCHAR(10), filter VARCHAR(16), calibVersion VARCHAR(16), ccd INT"
         cmd += ")"
@@ -92,12 +92,13 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
 
     rowsPerFilter = dict()
 
-    if opts.camera.lower() in ("pfs"):
-        checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*",
-                                       calib.upper() + "-*.fits*")
-    else:
-        checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*", "*",
-                                       calib.upper() + "-*.fits*")
+#    if opts.camera.lower() in ("pfs"):
+#        checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*",
+#                                       calib.upper() + "-*.fits*")
+#    else:
+    checkFits = os.path.join(opts.root, calib.upper(), "20*-*-*", "*", "*",
+                             calib.upper() + "-*.fits*")
+    print "checkFits = <",checkFits,">"
 
     for fits in glob.glob(checkFits):
         print "fits = <"+fits+">"
@@ -106,7 +107,7 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
         elif opts.camera.lower() in ("hsc", "hscsim"):
             m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w+-]+)/([\w-]+)/\w+-(\d{3}).fits', fits)#"BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-%(ccd)03d.fits"
         elif opts.camera.lower() in ("pfs"):
-            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w-]+)/\w+-PF(\w)(\w)_(\d{2}).fits', fits)
+            m = re.search(r'\w+/(\d{4})-(\d{2})-(\d{2})/([\w-]+)/([\w-]+)/\w+-PF(\w)(\w)_(\d{2}).fits', fits)
         if not m:
             if (opts.camera.lower() in ("suprime-cam", "suprimecam", "sc", "pfs") and
                 re.search(r'.*/\w+-0000000(\d).fits', fits)):
@@ -119,8 +120,8 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
         print "Registering:", fits
         print m.groups()
         if opts.camera.lower() in ("pfs"):
-            year, month, day, version, site, category, ccd = m.groups()
-            filterName = 'NONE'
+            year, month, day, filterName, version, site, category, ccd = m.groups()
+#            filterName = 'NONE'
         else:
             year, month, day, filterName, version, ccd = m.groups()
 

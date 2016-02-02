@@ -155,7 +155,9 @@ class PfsParseTask(ParseTask):
         #matches = re.search("^PFSA(\d{6})(\d)(\d).fits", filename)
         matches = re.search("PF([JLXIASPF])([ABCDS])(\d{6})(\d)(\d).fits", filename)
         if not matches:
-            raise RuntimeError("Unable to interpret filename: %s" % filename)
+            matches = re.search("PF([JLXIASPF])([ABCDS])-(\d{6})(\d)(\d).fits", filename)
+            if not matches:
+                raise RuntimeError("Unable to interpret filename: %s" % filename)
         site, category, visit, filterInt, spectrograph = matches.groups()
         if int(spectrograph) > 4:
             spectrograph = '4'

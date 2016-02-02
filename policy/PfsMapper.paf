@@ -276,7 +276,7 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(ccd)02d.fits"
+        template:    "BIAS/%(calibDate)s/%(filter)s/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -291,7 +291,7 @@ calibrations: {
         validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(ccd)02d.fits"
+        template:    "DARK/%(calibDate)s/%(filter)s/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -305,13 +305,43 @@ calibrations: {
         validStartName: validStart
         validEndName: validEnd
     }
+    tracedef: {
+        template:    "TRACEDEF/%(calibDate)s/%(filter)s/%(calibVersion)s/TRACEDEF-PF%(site)s%(category)s_%(ccd)02d.fits"
+        python:      "lsst.afw.image.MaskedImageF"
+        persistable: "MaskedImageF"
+        storage:     "FitsStorage"
+        level:       "Ccd"
+        tables:      "traceDef"
+        columns:     "ccd"
+        columns:     "taiObs"
+        reference:   "raw_visit"
+        refCols:     "visit"
+        validRange:  true
+        validStartName: validStart
+        validEndName: validEnd
+    }
     flat: {
-        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-PF%(site)s%(category)s_%(spectrograph)1d.fits"
+        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.MaskedImageF"
         persistable: "MaskedImageF"
         storage:     "FitsStorage"
         level:       "Ccd"
         tables:      "flat"
+        columns:     "ccd"
+        columns:     "taiObs"
+        reference:   "raw_visit"
+        refCols:     "visit"
+        validRange:  true
+        validStartName: validStart
+        validEndName: validEnd
+    }
+    arc: {
+        template:    "ARC/%(calibDate)s/%(filter)s/%(calibVersion)s/ARC-PF%(site)s%(category)s_%(ccd)02d.fits"
+        python:      "lsst.afw.image.MaskedImageF"
+        persistable: "MaskedImageF"
+        storage:     "FitsStorage"
+        level:       "Ccd"
+        tables:      "arc"
         columns:     "ccd"
         columns:     "taiObs"
         reference:   "raw_visit"
@@ -865,6 +895,14 @@ datasets: {
     dark_config: {
         template:      "config/dark.py"
         python:        "pfs.drp.stella.detrends.DarkConfig"
+        persistable:   "Config"
+        storage:       "ConfigStorage"
+        tables:        raw
+        tables:        raw_visit
+    }
+    tracedef_config: {
+        template:      "config/traceDef.py"
+        python:        "pfs.drp.stella.detrends.TraceDefConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
         tables:        raw
