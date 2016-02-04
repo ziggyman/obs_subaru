@@ -305,21 +305,21 @@ calibrations: {
         validStartName: validStart
         validEndName: validEnd
     }
-    tracedef: {
-        template:    "TRACEDEF/%(calibDate)s/%(filter)s/%(calibVersion)s/TRACEDEF-PF%(site)s%(category)s_%(ccd)02d.fits"
-        python:      "lsst.afw.image.MaskedImageF"
-        persistable: "MaskedImageF"
-        storage:     "FitsStorage"
-        level:       "Ccd"
-        tables:      "traceDef"
-        columns:     "ccd"
-        columns:     "taiObs"
-        reference:   "raw_visit"
-        refCols:     "visit"
-        validRange:  true
-        validStartName: validStart
-        validEndName: validEnd
-    }
+#    tracedef: {
+#        template:    "TRACEDEF/%(calibDate)s/%(filter)s/%(calibVersion)s/TRACEDEF-PF%(site)s%(category)s_%(ccd)02d.fits"
+#        python:      "lsst.afw.image.MaskedImageF"
+#        persistable: "MaskedImageF"
+#        storage:     "FitsStorage"
+#        level:       "Ccd"
+#        tables:      "traceDef"
+#        columns:     "ccd"
+#        columns:     "taiObs"
+#        reference:   "raw_visit"
+#        refCols:     "visit"
+#        validRange:  true
+#        validStartName: validStart
+#        validEndName: validEnd
+#    }
     flat: {
         template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.MaskedImageF"
@@ -900,9 +900,9 @@ datasets: {
         tables:        raw
         tables:        raw_visit
     }
-    tracedef_config: {
-        template:      "config/traceDef.py"
-        python:        "pfs.drp.stella.detrends.TraceDefConfig"
+    reduceArcTask_config: {
+        template:      "config/arc.py"
+        python:        "pfs.drp.stella.reduceArcTask.ReduceArcConfig"
         persistable:   "Config"
         storage:       "ConfigStorage"
         tables:        raw
