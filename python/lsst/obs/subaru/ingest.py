@@ -1,3 +1,4 @@
+#/Users/azuri/lsst/DarwinX86/pipe_tasks/2015_10.0-12-g9f70a69+11/bin/ingestImages.py '/Volumes/My Passport/data/spectra/pfs/PFS/' --mode=link '/Volumes/My Passport/data/spectra/pfs/raw/2016-01-12/*.fits' --loglevel 'info'
 import re
 import datetime
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+#/Users/azuri/stella-git/obs_subaru/bin.src/genCalibRegistry.py --root='/Volumes/My Passport/data/spectra/pfs/PFS/CALIB' --camera PFS --validity 180
 import glob
 import os
 import re

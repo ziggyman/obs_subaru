@@ -188,6 +188,8 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
             obsMidpoint = obsStart.nsecs() + long(expTime * 1000000000L / 2)
             calib.setMidTime(dafBase.DateTime(obsMidpoint))
 
+        print "pfsMapper::std_raw: exp.getCalib().getExptime() = ", exp.getCalib().getExptime();
+
         return exp
     
 #    def std_postISRCCD(self, item, dataId):
