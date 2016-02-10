@@ -276,7 +276,7 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/%(filter)s/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(ccd)02d.fits"
+        template:    "BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -291,7 +291,7 @@ calibrations: {
         validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/%(filter)s/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(ccd)02d.fits"
+        template:    "DARK/%(calibDate)s/NONE/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(ccd)02d.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"

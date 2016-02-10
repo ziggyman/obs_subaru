@@ -16,7 +16,7 @@ class PfsMapper(CameraMapper):
 
     def __init__(self, **kwargs):
 #        import pdb; pdb.set_trace()
-        print 'PfsMapper.__init__ started'
+#        print 'PfsMapper.__init__ started'
         policyFile = pexPolicy.DefaultPolicyFile("obs_subaru", "PfsMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
         if not kwargs.get('root', None):
@@ -77,7 +77,7 @@ class PfsMapper(CameraMapper):
                      # Warp
                      #"coaddTempExp",
                      ):
-            print 'PfsMapper.__init__: name = <',name,'>'
+#            print 'PfsMapper.__init__: name = <',name,'>'
             self.mappings[name].keyDict.update(keys)
 
 
@@ -146,7 +146,7 @@ class PfsMapper(CameraMapper):
     @staticmethod
     def _flipChipsLR(exp, wcs, dataId, dims=None):
         """Flip the chip left/right or top/bottom. Process either/and the pixels and wcs
-Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
+           Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
         """
         flipLR, flipTB = (False, True) if dataId['ccd'] in (100, 101, 102, 103) else (True, False)
         if exp:
@@ -173,32 +173,33 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
 #        return md
 
     def std_raw(self, item, dataId):
-#        exp = super(PfsMapper, self).std_raw(item, dataId)
-        print 'std_raw: item = ',item
-        header = item.getMetadata()
-        names = header.names()
-        print 'std_raw: item: len(names) = ',len(names)
-        for i in range(len(names)):
-            print "std_raw: item: header.names[",i,"] = ",names[i]
-        if header.exists("EXPTIME"):
-            exptime = header.get("EXPTIME")
-            print 'pfsMapper::std_raw: item: exptime = ',exptime
-        else:
-            print "WARNING: item: keyword EXPTIME not found in header"
+        exp = super(PfsMapper, self).std_raw(item, dataId)
+#        print 'std_raw: item = ',item
+#        header = item.getMetadata()
+#        names = header.names()
+#        print 'std_raw: item: len(names) = ',len(names)
+#        for i in range(len(names)):
+#            print "std_raw: item: header.names[",i,"] = ",names[i]
+#        if header.exists("EXPTIME"):
+#            exptime = header.get("EXPTIME")
+#            print 'pfsMapper::std_raw: item: exptime = ',exptime
+#        else:
+#            print "WARNING: item: keyword EXPTIME not found in header"
 
-        if (isinstance(item, afwImage.DecoratedImageU) or isinstance(item, afwImage.DecoratedImageI) or
-            isinstance(item, afwImage.DecoratedImageF) or isinstance(item, afwImage.DecoratedImageD)):
-            exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
-        else:
-            exp = item
-        self._standardizeExposure(self.exposures['raw'], exp, dataId, trimmed=False)
-        
-        if header.exists("EXPTIME"):
-            exptime = header.get("EXPTIME")
-            print 'pfsMapper::std_raw: exp: setting exptime to ',exptime
-            exp.getCalib().setExptime(exptime)
-        else:
-            print "pfsMapper::std_raw: WARNING: exp: keyword EXPTIME not found in header"
+#        if (isinstance(item, afwImage.DecoratedImageU) or isinstance(item, afwImage.DecoratedImageI) or
+#            isinstance(item, afwImage.DecoratedImageF) or isinstance(item, afwImage.DecoratedImageD)):
+#            exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
+#        else:
+#            exp = item
+#        self._standardizeExposure(self.exposures['raw'], exp, dataId, trimmed=False)
+
+#        header = exp.getMetadata()
+#        if header.exists("EXPTIME"):
+#            exptime = header.get("EXPTIME")
+#            print 'pfsMapper::std_raw: exp: setting exptime to ',exptime
+#            exp.getCalib().setExptime(exptime)
+#        else:
+#            print "pfsMapper::std_raw: WARNING: exp: keyword EXPTIME not found in header"
 
         md = exp.getMetadata()
         if md.exists("MJD-STR"):
@@ -273,22 +274,22 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
 
     def _extractAmpId(self, dataId):
         ampId = (self._extractDetectorName(dataId), 0, 0)
-        print 'PfsMapper._extractAmpId: ampId = ',ampId
+#        print 'PfsMapper._extractAmpId: ampId = ',ampId
         return ampId
 
     def _extractDetectorName(self, dataId):
-        print 'PfsMapper._extractDetectorName: dataId = ',dataId
+#        print 'PfsMapper._extractDetectorName: dataId = ',dataId
         detName = "%(filter)s" % dataId
         if detName == 'PFS-M':
             detName = 'PFS-R'
         detName = detName + '_' + str("%(spectrograph)s" % dataId)
-        print 'PfsMapper._extractDetectorName = <',detName,'>'
+#        print 'PfsMapper._extractDetectorName = <',detName,'>'
         return detName
 
     def _extractDetectorId(self, dataId):
-        print 'PfsMapper._extractDetectorId: dataId = ',dataId
+#        print 'PfsMapper._extractDetectorId: dataId = ',dataId
         detId = int("%(ccd)d" % dataId)
-        print 'PfsMapper._extractDetectorId = <',detId,'>'
+#        print 'PfsMapper._extractDetectorId = <',detId,'>'
         return detId
 
     def _computeCcdExposureId(self, dataId):
