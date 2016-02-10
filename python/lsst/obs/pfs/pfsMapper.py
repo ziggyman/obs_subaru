@@ -15,6 +15,7 @@ class PfsMapper(CameraMapper):
     packageName = "obs_subaru"
 
     def __init__(self, **kwargs):
+#        import pdb; pdb.set_trace()
         print 'PfsMapper.__init__ started'
         policyFile = pexPolicy.DefaultPolicyFile("obs_subaru", "PfsMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
@@ -173,6 +174,18 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
 
     def std_raw(self, item, dataId):
 #        exp = super(PfsMapper, self).std_raw(item, dataId)
+        print 'std_raw: item = ',item
+        header = item.getMetadata()
+        names = header.names()
+        print 'std_raw: item: len(names) = ',len(names)
+        for i in range(len(names)):
+            print "std_raw: item: header.names[",i,"] = ",names[i]
+        if header.exists("EXPTIME"):
+            exptime = header.get("EXPTIME")
+            print 'pfsMapper::std_raw: item: exptime = ',exptime
+        else:
+            print "WARNING: item: keyword EXPTIME not found in header"
+
         if (isinstance(item, afwImage.DecoratedImageU) or isinstance(item, afwImage.DecoratedImageI) or
             isinstance(item, afwImage.DecoratedImageF) or isinstance(item, afwImage.DecoratedImageD)):
             exp = afwImage.makeExposure(afwImage.makeMaskedImage(item.getImage()))
@@ -180,6 +193,13 @@ Most chips are flipped L/R, but the rotated ones (100..103) are flipped T/B
             exp = item
         self._standardizeExposure(self.exposures['raw'], exp, dataId, trimmed=False)
         
+        if header.exists("EXPTIME"):
+            exptime = header.get("EXPTIME")
+            print 'pfsMapper::std_raw: exp: setting exptime to ',exptime
+            exp.getCalib().setExptime(exptime)
+        else:
+            print "pfsMapper::std_raw: WARNING: exp: keyword EXPTIME not found in header"
+
         md = exp.getMetadata()
         if md.exists("MJD-STR"):
             calib = exp.getCalib()
