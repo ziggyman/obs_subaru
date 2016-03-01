@@ -165,15 +165,15 @@ class PfsParseTask(ParseTask):
         ccd = int(spectrograph)-1
         filter = ''
         if filterInt == '0':
-            filter = 'PFS-B'
+            filter = 'b'
         elif filterInt == '1':
-            filter = 'PFS-R'
+            filter = 'r'
             ccd += 4
         elif filterInt == '2':
-            filter = 'PFS-N'
+            filter = 'n'
             ccd += 8
         else:
-            filter = 'PFS-M'
+            filter = 'm'
             ccd += 4
 
         header = afwImage.readMetadata(filename)

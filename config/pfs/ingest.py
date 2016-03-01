@@ -5,7 +5,7 @@ config.register.columns = {'site': 'text', #J: JHU, L: LAM, X: Subaru offline, I
                            'field': 'text', # IMAGETYP
                            'visit': 'int',
                            'ccd': 'int', #[0-11]
-                           'filter': 'text', #PFS-B: blue, PFS-R: red, PFS-N: nir, PFS-M: medium resolution red
+                           'filter': 'text', #b: blue, r: red, n: nir, m: medium resolution red
                            'spectrograph': 'int', #1-4
                            'dateObs': 'text',
                            'expTime': 'double',

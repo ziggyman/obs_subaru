@@ -88,10 +88,10 @@ class PfsMapper(CameraMapper):
         afwImageUtils.defineFilter(name="UNRECOGNISED", lambdaEff=0,
                                    alias=["NONE", "None", "Unrecognised", "UNRECOGNISED",
                                           "Unrecognized", "UNRECOGNIZED", "NOTSET",])
-        afwImageUtils.defineFilter(name='PFS-B', lambdaEff=477, alias=['blue'])
-        afwImageUtils.defineFilter(name='PFS-R', lambdaEff=623, alias=['red'])
-        afwImageUtils.defineFilter(name='PFS-N', lambdaEff=623, alias=['nearInfraRed'])
-        afwImageUtils.defineFilter(name='PFS-M', lambdaEff=775, alias=['mediumResolutionRed'])
+        afwImageUtils.defineFilter(name='b', lambdaEff=477, alias=['blue','PFS-B'])
+        afwImageUtils.defineFilter(name='r', lambdaEff=623, alias=['red','PFS-R'])
+        afwImageUtils.defineFilter(name='n', lambdaEff=623, alias=['nearInfraRed','PFS-N'])
+        afwImageUtils.defineFilter(name='m', lambdaEff=775, alias=['mediumResolutionRed','PFS-M'])
         #
         # self.filters is used elsewhere, and for now we'll set it
         #
@@ -100,10 +100,10 @@ class PfsMapper(CameraMapper):
         #
         self.filters = {}
         for f in [
-            "PFS-B",
-            "PFS-R",
-            "PFS-N",
-            "PFS-M",
+            "b",
+            "r",
+            "n",
+            "m",
             "NONE",
             "UNRECOGNISED"]:
             # Get the canonical name -- see #2113
@@ -280,8 +280,8 @@ class PfsMapper(CameraMapper):
     def _extractDetectorName(self, dataId):
 #        print 'PfsMapper._extractDetectorName: dataId = ',dataId
         detName = "%(filter)s" % dataId
-        if detName == 'PFS-M':
-            detName = 'PFS-R'
+        if detName == 'm':
+            detName = 'r'
         detName = detName + '_' + str("%(spectrograph)s" % dataId)
 #        print 'PfsMapper._extractDetectorName = <',detName,'>'
         return detName
