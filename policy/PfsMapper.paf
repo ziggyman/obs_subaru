@@ -27,7 +27,7 @@ defaultSubLevels: {
 
 exposures: {
     raw: {
-        template:    "%(dateObs)s/PF%(site)s%(category)s%(visit)06d%(filter)s%(spectrograph)1d.fits"
+        template:    "%(dateObs)s/PF%(site)s%(category)s%(visit)06d%(arm)s%(spectrograph)1d.fits"
         python:     "lsst.afw.image.DecoratedImageU"
         persistable:         "DecoratedImageU"
         storage:     "FitsStorage"
@@ -36,7 +36,7 @@ exposures: {
         tables:        "raw_visit"
     }
     postISRCCD: {
-        template:    "postISRCCD/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(filter)s%(spectrograph)1d.fits"
+        template:    "postISRCCD/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(arm)s%(spectrograph)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -54,7 +54,7 @@ exposures: {
 #        tables:        "raw_visit"
 #    }
     calexp: {
-        template:    "calExp/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(filter)s%(spectrograph)1d.fits"
+        template:    "calExp/%(dateObs)s/v%(visit)07d/PF%(site)s%(category)s%(arm)s%(spectrograph)1d.fits"
         python:        "lsst.afw.image.ExposureF"
         persistable:        "ExposureF"
         storage:    "FitsStorage"
@@ -69,7 +69,7 @@ exposures: {
 #        storage:        "FitsCatalogStorage"
 #    }
     spArm: {
-        template:      "spArm/%(dateObs)s/v%(visit)07d/pfsArm-%(visit)06d-%(spectrograph)d%(filter)s.fits"
+        template:      "spArm/%(dateObs)s/v%(visit)07d/pfsArm-%(visit)06d-%(spectrograph)d%(arm)s.fits"
         python:        "pfs.drp.stella.SpectrumSet"
         persistable:   "SpectrumSet"
         storage:       "FitsCatalogStorage"
@@ -289,7 +289,7 @@ exposures: {
 
 calibrations: {
     bias: {
-        template:    "BIAS/%(calibDate)s/NONE/%(calibVersion)s/BIAS-PF%(site)s%(category)s_%(spectrograph)1d%(filter)1s.fits"
+        template:    "BIAS/NONE/%(calibVersion)s/pfsBias-%(calibDate)s-0-%(spectrograph)1d%(arm)s.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -304,7 +304,7 @@ calibrations: {
         validEndName: validEnd
     }
     dark: {
-        template:    "DARK/%(calibDate)s/NONE/%(calibVersion)s/DARK-PF%(site)s%(category)s_%(spectrograph)1d%(filter)1s.fits"
+        template:    "DARK/NONE/%(calibVersion)s/pfsDark-%(calibDate)s-0-%(spectrograph)1d%(arm)s.fits"
         python:      "lsst.afw.image.ImageF"
         persistable: "ImageF"
         storage:     "FitsStorage"
@@ -319,7 +319,7 @@ calibrations: {
         validEndName: validEnd
     }
 #    tracedef: {
-#        template:    "TRACEDEF/%(calibDate)s/%(filter)s/%(calibVersion)s/TRACEDEF-PF%(site)s%(category)s_%(spectrograph)1d%(filter)1s.fits"
+#        template:    "TRACEDEF/%(calibDate)s/%(filter)s/%(calibVersion)s/TRACEDEF-PF%(site)s%(category)s_%(spectrograph)1d%(filter)s.fits"
 #        python:      "lsst.afw.image.MaskedImageF"
 #        persistable: "MaskedImageF"
 #        storage:     "FitsStorage"
@@ -334,7 +334,7 @@ calibrations: {
 #        validEndName: validEnd
 #    }
     flat: {
-        template:    "FLAT/%(calibDate)s/%(filter)s/%(calibVersion)s/FLAT-PF%(site)s%(category)s_%(spectrograph)1d%(filter)1s.fits"
+        template:    "FLAT/%(filter)s/%(calibVersion)s/pfsFlat-%(calibDate)s-0-%(spectrograph)1d%(arm)s.fits"
         python:      "lsst.afw.image.MaskedImageF"
         persistable: "MaskedImageF"
         storage:     "FitsStorage"
@@ -349,7 +349,7 @@ calibrations: {
         validEndName: validEnd
     }
     arc: {
-        template:    "ARC/%(calibDate)s/%(filter)s/%(calibVersion)s/ARC-PF%(site)s%(category)s_%(spectrograph)1d%(filter)1s.fits"
+        template:    "ARC/%(filter)s/%(calibVersion)s/pfsArc-%(calibDate)s-0-%(spectrograph)1d%(arm)s.fits"
         python:      "lsst.afw.image.MaskedImageF"
         persistable: "MaskedImageF"
         storage:     "FitsStorage"
@@ -364,7 +364,7 @@ calibrations: {
         validEndName: validEnd
     }
     fringe: {
-        template:    "FRINGE/%(calibDate)s/%(filter)s/%(calibVersion)s/FRINGE-%(site)s%(category)s%(spectrograph)1d.fits"
+        template:    "FRINGE/%(filter)s/%(calibVersion)s/FRINGE-%(calibDate)s-0-%(spectrograph)1d%(arm)s.fits"
         python:      "lsst.afw.image.ExposureF"
         persistable: "ExposureF"
         storage:     "FitsStorage"

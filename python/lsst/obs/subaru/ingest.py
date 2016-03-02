@@ -175,9 +175,10 @@ class PfsParseTask(ParseTask):
         else:
             filter = 'm'
             ccd += 4
+        arm = filter
 
         header = afwImage.readMetadata(filename)
-        info = dict(site=site, category=category, visit=int(visit), filter=filter, spectrograph=int(spectrograph), ccd=int(ccd))
+        info = dict(site=site, category=category, visit=int(visit), filter=filter, arm=arm, spectrograph=int(spectrograph), ccd=int(ccd))
         info = self.getInfoFromMetadata(header, info=info)
         return info, [info]
 

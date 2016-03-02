@@ -6,6 +6,7 @@ config.register.columns = {'site': 'text', #J: JHU, L: LAM, X: Subaru offline, I
                            'visit': 'int',
                            'ccd': 'int', #[0-11]
                            'filter': 'text', #b: blue, r: red, n: nir, m: medium resolution red
+                           'arm': 'text', #b: blue, r: red, n: nir, m: medium resolution red
                            'spectrograph': 'int', #1-4
                            'dateObs': 'text',
                            'expTime': 'double',
@@ -14,8 +15,8 @@ config.register.columns = {'site': 'text', #J: JHU, L: LAM, X: Subaru offline, I
                            #IMAGETYP, same as field
                            #'src': 'text' #this is new
                           }
-config.register.unique = ['site', 'category', 'visit', 'filter', 'spectrograph']
-config.register.visit = ['visit', 'field', 'filter', 'dateObs', 'taiObs']
+config.register.unique = ['site', 'category', 'visit', 'filter', 'arm', 'spectrograph']
+config.register.visit = ['visit', 'field', 'filter', 'arm', 'dateObs', 'taiObs']
 
 config.parse.translation = {'dataType': 'IMAGETYP',
                             'expTime': 'EXPTIME',
